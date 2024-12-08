@@ -1,88 +1,81 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-
-#define MAX_STU 200
-#define MAX_SUB 12
+#define MAX_STUDENTS 100
+#define MAX_SUBJECTS 10
+#define NAME_LENGTH 50
 
 typedef struct {
-    char name[30];
-    float scores[MAX_SUB];
-    double average;
+    char name[NAME_LENGTH];
+    float scores[MAX_SUBJECTS];
+    int subject_count;
+    float average;
     float highest;
     float lowest;
 } Student;
 
-void Performance(Student *student, int subjectno) {
-    float sum = 0;
-
-    // Initialization 
-    student->highest = student->scores[0];
-    student->lowest = student->scores[0];
-
+void inputStudentData(Student *student) {
+    printf("Enter student name: ");
+    scanf(" %[^\n]", student->name);
     
-    for (int i = 0; i < subjectno; i++) {
-        sum += student->scores[i];
+    printf("Enter number of subjects: ");
+    scanf("%d", &student->subject_count);
+    
+    student->highest = -1.0; // Initialize to a low value
+    student->lowest = 101.0; // Initialize to a high value
+    float total = 0.0;
 
-        if (student->scores[i] > student->highest)
+    for (int i = 0; i < student->subject_count; i++) {
+        printf("Enter score for subject %d: ", i + 1);
+        scanf("%f", &student->scores[i]);
+        
+        // Update total, highest, and lowest
+        total += student->scores[i];
+        if (student->scores[i] > student->highest) {
             student->highest = student->scores[i];
-
-        if (student->scores[i] < student->lowest)
+        }
+        if (student->scores[i] < student->lowest) {
             student->lowest = student->scores[i];
+        }
     }
-
-    student->average = sum / subjectno;
+    
+    student->average = total / student->subject_count;
 }
 
-void Summary(Student students[], int studentCount, int subjectCount) {
-    printf("\nSummary of Student's Performance\n");
-    for (int i = 0; i < studentCount; i++) {
-        printf("\nStudent Name: %s\n", students[i].name);
-        printf("Average Score of the student: %.2f\n", students[i].average);
-        printf("Highest Score of the student: %.2f\n", students[i].highest);
-        printf("Lowest Score of the student: %.2f\n", students[i].lowest);
+void displayStudentData(const Student *student) {
+    printf("\nStudent Name: %s\n", student->name);
+    printf("Scores: ");
+    for (int i = 0; i < student->subject_count; i++) {
+        printf("%.2f ", student->scores[i]);
     }
+    printf("\nAverage Score: %.2f\n", student->average);
+    printf("Highest Score: %.2f\n", student->highest);
+    printf("Lowest Score: %.2f\n", student->lowest);
 }
-
-
 
 int main() {
-    Student students[MAX_STU];
-    int studentCount, subjectCount;
+    Student students[MAX_STUDENTS];
+    int student_count = 0;
+    char choice;
 
-    
-    printf("Enter the number of students: ");
-    scanf("%d", &studentCount);
-
-    
-    if (studentCount <= 0 || studentCount > MAX_STU) {
-        printf("Error: Invalid number of students.\n");
-        return 1;
-    }
-    printf("Enter the number of subjects: ");
-    scanf("%d", &subjectCount);
-    if (subjectCount <= 0 || subjectCount > MAX_SUB) {
-        printf("Error: Invalid number of subjects.\n");
-        return 1;
-    }
-
-    for (int i = 0; i < studentCount; i++) {
-        printf("\nEnter the name of student %d: ", i + 1);
-        getchar(); 
-        fgets(students[i].name, sizeof(students[i].name), stdin);
-        students[i].name[strcspn(students[i].name, "\n")] = '\0'; 
-
-        printf("Enter scores for %d subjects of the student :- \n", subjectCount);
-        printf("\n");
-        for (int j = 0; j < subjectCount; j++) {
-            printf("Score for subject %d: ", j + 1);
-            scanf("%f", &students[i].scores[j]);
+    do {
+        if (student_count >= MAX_STUDENTS) {
+            printf("Maximum number of students reached.\n");
+            break;
         }
-        Performance(&students[i], subjectCount);
+        
+        inputStudentData(&students[student_count]);
+        student_count++;
+
+        printf("Do you want to enter another student? (y/n): ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+
+    printf("\nSummary of Student Performance:\n");
+    for (int i = 0; i < student_count; i++) {
+        displayStudentData(&students[i]);
     }
-
-
-    Summary(students, studentCount, subjectCount);
 
     return 0;
 }
