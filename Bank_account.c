@@ -6,14 +6,13 @@
 typedef struct {
     int accountNumber;
     char accountHolderName[40];
-    char accountType[30]; // "Savings" or "Fixed Deposit"
+    char accountType[30];
     float balance;
 } Account;
 
 Account accounts[MAX_ACCOUNTS];
 int acc_Count = 0;
 
-// Function to create a new account
 void Account_creation() {
     if (acc_Count >= MAX_ACCOUNTS) {
         printf("Cannot create more accounts. Maximum limit reached.\n");
@@ -22,7 +21,7 @@ void Account_creation() {
 
     printf("\n New Account creation \n");
     printf("Enter the name of account holder:- ");
-    getchar(); // Clear the newline character
+    getchar(); 
     fgets(accounts[acc_Count].accountHolderName, 50, stdin);
     accounts[acc_Count].accountHolderName[strcspn(accounts[acc_Count].accountHolderName, "\n")] = '\0';
 
@@ -37,17 +36,16 @@ void Account_creation() {
     acc_Count++;
 }
 
-// Function to find an account by account number
 int AccountFind(int accountNum) {
     for (int i = 0; i < acc_Count; i++) {
         if (accounts[i].accountNumber == accountNum) {
             return i;
         }
     }
-    return -1; // Account not found
+    return -1;
 }
 
-// Function to deposit money
+
 void deposit() {
     int accountNumber;
     float amount;
@@ -74,7 +72,6 @@ void deposit() {
     printf("Deposit is successful, updated balance is : %.2f\n", accounts[index].balance);
 }
 
-// Function to withdraw money
 void withdraw() {
     int accountNumber;
     float amount;
@@ -101,7 +98,7 @@ void withdraw() {
     printf("Withdrawal completion , now the updated balance is : %.2f\n", accounts[index].balance);
 }
 
-// Function to check balance
+
 void checkBalance() {
     int accountNumber;
 
@@ -120,7 +117,7 @@ void checkBalance() {
     printf("Current Balance in account : %.2f\n", accounts[index].balance);
 }
 
-// Function to calculate interest
+
 void calculateInterest() {
     int accountNumber;
     float rate, years;
